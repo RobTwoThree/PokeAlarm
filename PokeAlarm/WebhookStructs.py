@@ -45,9 +45,7 @@ class RocketMap:
         charge_id = check_for_none(int, data.get('move_2'), '?')
         lat, lng = data['latitude'], data['longitude']
  	# Get the form from data and as it may be uint or string make sure is zero when string 'None'
-        form_raw = data['form']
-        if form_raw == None:
-            form_raw = 0
+        form_raw = check_for_none(int, data.get('form'), 0)
         # Generate all the non-manager specifi
         pkmn = {
             'type': "pokemon",
