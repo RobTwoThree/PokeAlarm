@@ -341,6 +341,7 @@ class Manager(object):
         size = pkmn['size']
         gender = pkmn['gender']
         form = pkmn['form']
+        level_iv = pkmn['level_iv']
 
         filters = self.__pokemon_settings['filters'][pkmn_id]
         for filt_ct in range(len(filters)):
@@ -485,7 +486,7 @@ class Manager(object):
 
         # Finally, add in all the extra crap we waited to calculate until now
         time_str = get_time_as_str(pkmn['disappear_time'], self.__timezone)
-	#If it has a form it's an unown and append form onto name
+	      #If it has a form it's an unown and append form onto name
         if form != "unset":
             name = name + " - " + form
         pkmn.update({
@@ -499,7 +500,8 @@ class Manager(object):
             'iv': "{:.1f}".format(iv) if iv != '?' else '?',
             'iv_2': "{:.2f}".format(iv) if iv != '?' else '?',
             'quick_move': self.__move_name.get(quick_id, 'unknown'),
-            'charge_move': self.__move_name.get(charge_id, 'unknown')
+            'charge_move': self.__move_name.get(charge_id, 'unknown'),
+            'level_iv': level_iv
         })
         self.add_optional_travel_arguments(pkmn)
 
