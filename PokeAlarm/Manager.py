@@ -342,6 +342,7 @@ class Manager(object):
         gender = pkmn['gender']
         form = pkmn['form']
         level_iv = pkmn['level_iv']
+        cp = pkmn['cp']
 
         filters = self.__pokemon_settings['filters'][pkmn_id]
         for filt_ct in range(len(filters)):
@@ -501,7 +502,8 @@ class Manager(object):
             'iv_2': "{:.2f}".format(iv) if iv != '?' else '?',
             'quick_move': self.__move_name.get(quick_id, 'unknown'),
             'charge_move': self.__move_name.get(charge_id, 'unknown'),
-            'level_iv': level_iv
+            'level_iv': level_iv,
+            'cp': cp
         })
         self.add_optional_travel_arguments(pkmn)
 

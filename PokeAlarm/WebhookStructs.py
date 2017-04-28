@@ -46,6 +46,7 @@ class RocketMap:
         lat, lng = data['latitude'], data['longitude']
  	      # Get the form from data and as it may be uint or string make sure is zero when string 'None'
         level_iv_raw = check_for_none(int, data.get('level_iv'), '?')
+        cp_raw = check_for_none(int, data.get('cp'), '?')
         form_raw = check_for_none(int, data.get('form'), 0)
         # Generate all the non-manager specifi
         pkmn = {
@@ -76,7 +77,8 @@ class RocketMap:
             'gmaps': get_gmaps_link(lat, lng),
             'applemaps': get_applemaps_link(lat, lng),
 	          'form': get_form_name(int(form_raw)),
-            'level_iv': level_iv_raw
+            'level_iv': level_iv_raw,
+            'cp': cp_raw
         }
         if pkmn['atk'] != '?' or pkmn['def'] != '?' or pkmn['sta'] != '?':
             pkmn['iv'] = float(((pkmn['atk'] + pkmn['def'] + pkmn['sta']) * 100) / float(45))
