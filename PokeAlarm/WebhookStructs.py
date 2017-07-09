@@ -137,14 +137,14 @@ class RocketMap:
         elif 'end' in data:  # rocketmap
             raid_end = datetime.utcfromtimestamp(data['end'])
 
-        if 'fort_id' in data:  # monocle sends a unique raid seed
-            raid_seed = data.get('fort_id')
+        if 'raid_seed' in data:  # monocle sends a unique raid seed
+            raid_seed = data.get('raid_seed')
         else:
             raid_seed = data.get('gym_id')  # RM sends the gym id
 
         raid = {
             'type': 'raid',
-            'id': data.get('fort_id',  data.get('fort_id')),
+            'id': raid_seed,
             'boss_pkmn_id': check_for_none(int, data.get('boss_pokemon_id'), 0),
             'cp': check_for_none(int, data.get('boss_cp'), '?'),
             'quick_id': quick_id,
