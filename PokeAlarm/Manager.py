@@ -1042,7 +1042,7 @@ class Manager(object):
                       .format(raid['id'], level, settings['max_level']))
             return False
 
-        if settings['ignore_eggs'] is True and raid['pkmn_id'] == 0:
+        if settings['ignore_eggs'] is True and raid['boss_pkmn_id'] == 0:
             log.debug("Raid {} is an egg, ignore".format(raid['id']))
             return False
 
