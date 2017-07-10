@@ -774,11 +774,10 @@ class Manager(object):
             if old_raid_end == raid_end:
                 if old_raid_pkmn == pkmn_id: # raid with same end time exists and it has same pokemon id, skip it
                     if self.__quiet is False:
-                        log.debug("Raid {} was skipped because it was previously processed.".format(id))
+                        log.debug("Raid {} was skipped because it was previously processed.".format(id_))
                     return
 
-        self.__raid_hist[id_] = dict(expire_time=raid_end, pkmn_id=pkmn_id)
-
+        self.__raid_hist[id_] = dict(expire_time=raid_end, boss_pkmn_id=pkmn_id)
         lat, lng = raid['lat'], raid['lng']
         dist = get_earth_dist([lat, lng], self.__latlng)
 
