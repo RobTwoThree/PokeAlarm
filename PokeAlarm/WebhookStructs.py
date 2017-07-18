@@ -126,14 +126,14 @@ class RocketMap:
         raid_begin = None
 
         if 'raid_begin' in data:
-            raid_begin = datetime.utcfromtimestamp(data['raid_begin'] / 1000)
+            raid_begin = datetime.utcfromtimestamp(data['raid_begin'])
         elif 'battle' in data:
             raid_begin = datetime.utcfromtimestamp(data['battle'])
         elif 'start' in data:
             raid_begin = datetime.utcfromtimestamp(data['start'])
 
         if 'raid_end' in data:  # monocle
-            raid_end = datetime.utcfromtimestamp(data['raid_end'] / 1000)
+            raid_end = datetime.utcfromtimestamp(data['raid_end'])
         elif 'end' in data:  # rocketmap
             raid_end = datetime.utcfromtimestamp(data['end'])
 
