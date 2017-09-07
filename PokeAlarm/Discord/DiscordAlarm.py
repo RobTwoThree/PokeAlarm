@@ -27,7 +27,8 @@ class DiscordAlarm(Alarm):
             'avatar_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/<pkmn_id>.png",
             'title': "A wild <pkmn> has appeared!",
             'url': "<gmaps>",
-            'body': "Available until <24h_time> (<time_left>)."
+            'body': "Available until <24h_time> (<time_left>).",
+            'color': ""
         },
         'pokestop': {
             'username': "Pokestop",
@@ -36,7 +37,8 @@ class DiscordAlarm(Alarm):
             'avatar_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/pokestop.png",
             'title': "Someone has placed a lure on a Pokestop!",
             'url': "<gmaps>",
-            'body': "Lure will expire at <24h_time> (<time_left>)."
+            'body': "Lure will expire at <24h_time> (<time_left>).",
+            'color': ""
         },
         'gym': {
             'username': "<name>",
@@ -45,7 +47,8 @@ class DiscordAlarm(Alarm):
             'avatar_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/gym_<team_id>.png",
             'title': "<name> gym has fallen!",
             'url': "<gmaps>",
-            'body': "It is now controlled by <new_team>.\Previously controlled by: <old_team>"
+            'body': "It is now controlled by <new_team>.\Previously controlled by: <old_team>",
+            'color': ""
         },
         'raid': {
             'username': "Raid",
@@ -55,6 +58,7 @@ class DiscordAlarm(Alarm):
             'title': "Level <raid_level> Raid is available against <pkmn>!",
             'url': "<gmaps>",
             'body': "The raid is available until <24h_time> (<time_left>).",
+            'color': "<gym_team>"
         },
         'egg': {
             'username': "Egg",
@@ -63,7 +67,8 @@ class DiscordAlarm(Alarm):
             'avatar_url': "https://raw.githubusercontent.com/fosJoddie/PokeAlarm/raids/icons/egg_<raid_level>.png",
             'title': "Raid is incoming!",
             'url': "<gmaps>",
-            'body': "A level <raid_level> raid will hatch <begin_24h_time> (<begin_time_left>)."
+            'body': "A level <raid_level> raid will hatch <begin_24h_time> (<begin_time_left>).",
+            'color': "<gym_team>"
         }
     }
 
@@ -121,6 +126,7 @@ class DiscordAlarm(Alarm):
             'title': settings.pop('title', default['title']),
             'url': settings.pop('url', default['url']),
             'body': settings.pop('body', default['body']),
+            'color': settings.pop('color', default['color']),
             'map': get_static_map_url(settings.pop('map', self.__map), self.__static_map_key)
         }
 
@@ -130,6 +136,17 @@ class DiscordAlarm(Alarm):
     # Send Alert to Discord
     def send_alert(self, alert, info):
         log.debug("Attempting to send notification to Discord.")
+        color_code = replace(alert['color'], info)
+        color_to_display = 0x000000
+        log.debug("Color code provided: {}".format(color_code))
+        
+        if color_code == "Mystic":
+            color_to_display = 0x2447ff
+        if color_code == "Valor":
+            color_to_display = 0xff2050
+        if color_code == "Instict":
+            color_to_display = 0xffe20e
+        
         payload = {
             'username': replace(alert['username'], info)[:32],  # Username must be 32 characters or less
             'content': replace(alert['content'], info),
@@ -140,7 +157,8 @@ class DiscordAlarm(Alarm):
                 'title': replace(alert['title'], info),
                 'url': replace(alert['url'], info),
                 'description': replace(alert['body'], info),
-                'thumbnail': {'url': replace(alert['icon_url'], info)}
+                'thumbnail': {'url': replace(alert['icon_url'], info)},
+                'color': color_to_display
             }]
             if alert['map'] is not None:
                 payload['embeds'][0]['image'] = {'url': replace(alert['map'], {'lat': info['lat'], 'lng': info['lng']})}
