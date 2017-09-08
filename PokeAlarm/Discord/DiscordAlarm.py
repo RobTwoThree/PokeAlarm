@@ -144,7 +144,7 @@ class DiscordAlarm(Alarm):
             color_to_display = 0x2447ff
         if color_code == "Valor":
             color_to_display = 0xff2050
-        if color_code == "Instict":
+        if color_code == "Instinct":
             color_to_display = 0xffe20e
         
         payload = {
