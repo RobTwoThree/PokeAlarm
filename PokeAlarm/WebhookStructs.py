@@ -28,6 +28,8 @@ class RocketMap:
                 return RocketMap.pokestop(data.get('message'))
             elif kind == 'gym' or kind == 'gym_details':
                 return RocketMap.gym(data.get('message'))
+            elif kind == 'raid':
+                log.debug("{} webhook received. This webhook was not processed by this alarm.".format({kind}))
             elif kind in ['captcha', 'scheduler']:  # Unsupported Webhooks
                 log.debug("{} webhook received. This webhooks is not yet supported at this time.".format({kind}))
             else:
