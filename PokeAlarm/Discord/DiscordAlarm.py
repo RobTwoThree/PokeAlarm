@@ -4,7 +4,7 @@ import requests
 # 3rd Party Imports
 # Local Imports
 from ..Alarm import Alarm
-from ..Utils import parse_boolean, get_static_map_url, reject_leftover_parameters, require_and_remove_key
+from ..Utils import parse_boolean, get_static_map_url, reject_leftover_parameters, require_and_remove_key, get_time_as_str
 
 log = logging.getLogger('Discord')
 try_sending = Alarm.try_sending
@@ -53,7 +53,7 @@ class DiscordAlarm(Alarm):
         'raid': {
             'username': "Raid",
             'content': "",
-            'icon_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/<pkmn_id>.png",
+            'icon_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/gym_<team_id>.png",
             'avatar_url': "https://raw.githubusercontent.com/fosJoddie/PokeAlarm/raids/icons/egg_<raid_level>.png",
             'title': "Level <raid_level> Raid is available against <pkmn>!",
             'url': "<gmaps>",
@@ -63,7 +63,7 @@ class DiscordAlarm(Alarm):
         'egg': {
             'username': "Egg",
             'content': "",
-            'icon_url': "https://raw.githubusercontent.com/fosJoddie/PokeAlarm/raids/icons/egg_<raid_level>.png",
+            'icon_url': "https://raw.githubusercontent.com/kvangent/PokeAlarm/master/icons/gym_<team_id>.png",
             'avatar_url': "https://raw.githubusercontent.com/fosJoddie/PokeAlarm/raids/icons/egg_<raid_level>.png",
             'title': "Raid is incoming!",
             'url': "<gmaps>",
@@ -137,8 +137,34 @@ class DiscordAlarm(Alarm):
     def send_alert(self, alert, info):
         log.debug("Attempting to send notification to Discord.")
         color_code = replace(alert['color'], info)
+        username_text = replace(alert['username'], info)[:32]
         color_to_display = 0x000000
         log.debug("Color code provided: {}".format(color_code))
+        gym_name = info['gym_name']
+        raid_begin = get_time_as_str(info['raid_begin'], None)
+        raid_end = get_time_as_str(info['expire_time'], None)
+        cp = info['cp']
+
+        if gym_name == "":
+            gym_name_to_display = "*Gym name unknown.*"
+        else:
+            gym_name_to_display = gym_name + " Gym"
+            if gym_name in ("GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+                gym_name_to_display = "Sprint Store Gym"
+
+
+        if gym_name in ("Starbucks", "GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+            if cp == 0:
+                username_text = "SPONSORED L-" + str(info['raid_level']) + " EGG: " + str(raid_end[1])
+            else:
+                username_text = "SPONSORED L-" + str(info['raid_level']) + " RAID: " + str(info['pkmn'])
+
+        if cp == 0:
+            raid_details = "Egg Level: " + str(info['raid_level']) + "Laid at: " + str(raid_begin[1]) + "\nHatches at: " + str(raid_end[1]) + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
+        else:
+            raid_details = "Raid Level: " + str(info['raid_level']) + "\nBoss: " + str(info['pkmn']) + "\nCP: " + str(info['cp']) + "\nQuick Move: " + str(info['quick_move']) + "\nCharge Move: " + str(info['charge_move']) + "\n\nStarts at: " + str(raid_begin[1]) + "\nEnds at: " + str(raid_end[1])  + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
+
+        log.debug("Pull data: {}".format(gym_name_to_display))
         
         if color_code == "Mystic":
             color_to_display = 0x2447ff
@@ -148,17 +174,31 @@ class DiscordAlarm(Alarm):
             color_to_display = 0xffe20e
         
         payload = {
-            'username': replace(alert['username'], info)[:32],  # Username must be 32 characters or less
-            'content': replace(alert['content'], info),
+            'username': username_text,  # Username must be 32 characters or less
+            #'content': replace(alert['content'], info),
             'avatar_url':  replace(alert['avatar_url'], info),
         }
         if alert['disable_embed'] is False:
             payload['embeds'] = [{
                 'title': replace(alert['title'], info),
                 'url': replace(alert['url'], info),
-                'description': replace(alert['body'], info),
+                #'description': gym_name_to_display, # Removed for now. Save for later use
                 'thumbnail': {'url': replace(alert['icon_url'], info)},
-                'color': color_to_display
+                'color': color_to_display,
+                'fields': [
+                    {
+                        'name': "Gym Name:",
+                        'value': gym_name_to_display
+                    },
+                    {
+                        'name': "Occupied by:",
+                        'value': "Team " + info['gym_team']
+                    },
+                    {
+                        'name': "Raid Details:",
+                        'value': raid_details
+                    }
+                ]
             }]
             if alert['map'] is not None:
                 payload['embeds'][0]['image'] = {'url': replace(alert['map'], {'lat': info['lat'], 'lng': info['lng']})}

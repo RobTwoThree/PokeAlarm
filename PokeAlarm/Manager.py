@@ -820,7 +820,8 @@ class Manager(object):
                 log.debug("Raid {} did not pass pokemon check".format(id_))
                 return
 
-        # check if the level is in the filter range or if we are ignoring eggs
+        # Check if the level is in the filter range or if we are ignoring eggs
+        # Also check if filtering sponsored raids only or a mix of sponsored raids and normal raids
         passed = self.check_raid_filter(self.__raid_settings,raid)
 
         if not passed:
@@ -1030,7 +1031,20 @@ class Manager(object):
 
     def check_raid_filter(self, settings, raid):
         level = raid['raid_level']
+        gym_name = raid['gym_name']
 
+        if settings['sponsored_raid_mode'] is True:
+            log.debug("Raid {} is being evaluated for sponsor type. Sponsored Raid Mode: {}".format(raid['id'], settings['sponsored_raid_mode']))
+            if gym_name == "Starbucks":
+                log.debug("Level {} Raid is a sponsored raid (Starbucks)."
+                          .format(level))
+                return True
+            
+            if gym_name in ("GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+                log.debug("Level {} Raid is a sponsored raid (Sprint)."
+                          .format(level))
+                return True
+        
         if level < settings['min_level']:
             log.debug("Raid {} is less ({}) than min ({}) level, ignore"
                       .format(raid['id'], level, settings['min_level']))
@@ -1043,6 +1057,10 @@ class Manager(object):
 
         if settings['ignore_eggs'] is True and raid['boss_pkmn_id'] == 0:
             log.debug("Raid {} is an egg, ignore".format(raid['id']))
+            return False
+
+        if settings['sponsored_raid_mode_only'] is True:
+            log.debug("Raid {} is ignored. Sponsored mode only.".format(raid['id']))
             return False
 
         return True

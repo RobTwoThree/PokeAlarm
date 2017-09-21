@@ -294,7 +294,9 @@
         "filters": {
             "min_level": "1",
             "max_level": "5",
-            "ignore_eggs": "False"
+            "ignore_eggs": "False",
+            "sponsored_raid_mode": "False",
+            "sponsored_raid_mode_only": "False"
         },
         "default": {
             "min_dist":"0", "max_dist":"inf", "min_cp": "0", "max_cp": "999999", "min_iv":"0", "max_iv":"100",
