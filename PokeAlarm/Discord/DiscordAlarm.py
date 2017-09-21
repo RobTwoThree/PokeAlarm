@@ -160,7 +160,7 @@ class DiscordAlarm(Alarm):
                 username_text = "SPONSORED L-" + str(info['raid_level']) + " RAID: " + str(info['pkmn'])
 
         if cp == 0:
-            raid_details = "Egg Level: " + str(info['raid_level']) + "\nLaid at: " + str(raid_begin[1]) + "\nHatches at: " + str(raid_end[1]) + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
+            raid_details = "Egg Level: " + str(info['raid_level']) + "\nHatches at: " + str(raid_begin[1]) + "\nRaid ends at: " + str(raid_end[1]) + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
         else:
             raid_details = "Raid Level: " + str(info['raid_level']) + "\nBoss: " + str(info['pkmn']) + "\nCP: " + str(info['cp']) + "\nQuick Move: " + str(info['quick_move']) + "\nCharge Move: " + str(info['charge_move']) + "\n\nStarts at: " + str(raid_begin[1]) + "\nEnds at: " + str(raid_end[1])  + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
 
