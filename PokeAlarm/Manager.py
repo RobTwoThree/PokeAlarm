@@ -1032,18 +1032,26 @@ class Manager(object):
     def check_raid_filter(self, settings, raid):
         level = raid['raid_level']
         gym_name = raid['gym_name']
+        external_id = raid['external_id']
 
         if settings['sponsored_raid_mode'] is True:
             log.debug("Raid {} is being evaluated for sponsor type. Sponsored Raid Mode: {}".format(raid['id'], settings['sponsored_raid_mode']))
-            if gym_name == "Starbucks":
-                log.debug("Level {} Raid is a sponsored raid (Starbucks)."
-                          .format(level))
+            
+            ##FOR FUTURE USE TO FILTER FOR SPONSORED RAIDS INSTEAD OF STATIC GYM NAMES
+            if "." not in external_id:
+                log.debug("Level {} Raid is a sponsored raid ({})"
+                          .format(level, gym_name))
                 return True
             
-            if gym_name in ("GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
-                log.debug("Level {} Raid is a sponsored raid (Sprint)."
-                          .format(level))
-                return True
+            #if gym_name == "Starbucks":
+            #    log.debug("Level {} Raid is a sponsored raid (Starbucks)."
+            #              .format(level))
+            #    return True
+            
+            #if gym_name in ("GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+            #    log.debug("Level {} Raid is a sponsored raid (Sprint)."
+            #              .format(level))
+            #    return True
         
         if level < settings['min_level']:
             log.debug("Raid {} is less ({}) than min ({}) level, ignore"
