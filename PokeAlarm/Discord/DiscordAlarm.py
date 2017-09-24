@@ -145,15 +145,17 @@ class DiscordAlarm(Alarm):
         external_id = info['external_id']
         neighborhood = info['neighborhood']
         city = info['city']
+        body = alert['body']
         raid_begin = get_time_as_str(info['raid_begin'], None)
         raid_end = get_time_as_str(info['expire_time'], None)
         cp = info['cp']
         log.debug("Neighborhood: {}".format(neighborhood)) # DEBUG TO SEE IF NEIGHBORHOOD GETS PULLED EVALUATED TO REVISE title
         log.debug("City: {}".format(city)) # DEBUG TO SEE IF NEIGHBORHOOD GETS PULLED EVALUATED TO REVISE title
+        log.debug("Body: {}".format(body))
         if city == "unknown" and neighborhood == "unknown":
-            reverse_location_text = info['description']
+            reverse_location_text = body
         elif city != "unknown" and neighborhood == "unknown":
-            reverse_location_text = city + ", " + info['description']
+            reverse_location_text = city + ", " + body
         else:
             reverse_location_text = city + ", " + neighborhood
 
