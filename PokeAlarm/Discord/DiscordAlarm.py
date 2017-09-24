@@ -133,6 +133,7 @@ class DiscordAlarm(Alarm):
         reject_leftover_parameters(settings, "'Alert level in Discord alarm.")
         return alert
 
+
     # Send Alert to Discord
     def send_alert(self, alert, info):
         log.debug("Attempting to send notification to Discord.")
@@ -141,9 +142,20 @@ class DiscordAlarm(Alarm):
         color_to_display = 0x000000
         log.debug("Color code provided: {}".format(color_code))
         gym_name = info['gym_name']
+        external_id = info['external_id']
+        neighborhood = info['neighborhood']
+        city = info['city']
         raid_begin = get_time_as_str(info['raid_begin'], None)
         raid_end = get_time_as_str(info['expire_time'], None)
         cp = info['cp']
+        log.debug("Neighborhood: {}".format(neighborhood)) # DEBUG TO SEE IF NEIGHBORHOOD GETS PULLED EVALUATED TO REVISE title
+        log.debug("City: {}".format(city)) # DEBUG TO SEE IF NEIGHBORHOOD GETS PULLED EVALUATED TO REVISE title
+        if city == "unknown" and neighborhood == "unknown":
+            reverse_location_text = info['description']
+        elif city != "unknown" and neighborhood == "unknown":
+            reverse_location_text = city + ", " + info['description']
+        else:
+            reverse_location_text = city + ", " + neighborhood
 
         if gym_name == "":
             gym_name_to_display = "*Gym name unknown.*"
@@ -151,13 +163,19 @@ class DiscordAlarm(Alarm):
             gym_name_to_display = gym_name + " Gym"
             if gym_name in ("GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
                 gym_name_to_display = "Sprint Store Gym"
-
-
-        if gym_name in ("Starbucks", "GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+     
+        ##FOR FUTURE USE TO REPLACE STATIC GYM NAMES FOR SPONSORED RAID CHECK
+        if "." not in external_id:
             if cp == 0:
                 username_text = "SPONSORED L-" + str(info['raid_level']) + " EGG: " + str(raid_end[1])
             else:
                 username_text = "SPONSORED L-" + str(info['raid_level']) + " RAID: " + str(info['pkmn'])
+
+        #if gym_name in ("Starbucks", "GET YOUR LEVEL BADGE", "GET MORE FREE ITEMS"):
+        #    if cp == 0:
+        #        username_text = "SPONSORED L-" + str(info['raid_level']) + " EGG: " + str(raid_end[1])
+        #    else:
+        #        username_text = "SPONSORED L-" + str(info['raid_level']) + " RAID: " + str(info['pkmn'])
 
         if cp == 0:
             raid_details = "Egg Level: " + str(info['raid_level']) + "\nHatches at: " + str(raid_begin[1]) + "\nRaid ends at: " + str(raid_end[1]) + "\nCoords: (" + str(info['lat']) + ", " + str(info['lng']) + ")"
@@ -180,9 +198,8 @@ class DiscordAlarm(Alarm):
         }
         if alert['disable_embed'] is False:
             payload['embeds'] = [{
-                'title': replace(alert['title'], info),
+                'title': reverse_location_text, # Replace title with validated <city>, <neighborhood>/(body) content
                 'url': replace(alert['url'], info),
-                #'description': gym_name_to_display, # Removed for now. Save for later use
                 'thumbnail': {'url': replace(alert['icon_url'], info)},
                 'color': color_to_display,
                 'fields': [

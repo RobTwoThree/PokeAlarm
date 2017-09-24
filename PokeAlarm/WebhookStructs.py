@@ -164,7 +164,8 @@ class RocketMap:
             'lng': float(data['raid_lon']),
             'gym_name': data.get('raid_gym_name'),
             'gym_team': data.get('raid_gym_team'),
-            'gym_image_url': data.get('raid_gym_image_url')
+            'gym_image_url': data.get('raid_gym_image_url'),
+            'external_id': data.get('external_id')
         }
         
         raid['gmaps'] = get_gmaps_link(raid['lat'], raid['lng'])
