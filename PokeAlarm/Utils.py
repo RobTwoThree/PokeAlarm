@@ -246,7 +246,7 @@ def get_static_map_url(settings, api_key=None):  # TODO: optimize formatting
     if not parse_boolean(settings.get('enabled', 'True')):
         return None
     width = settings.get('width', '250')
-    height = settings.get('height', '200') # Resized from 125
+    height = settings.get('height', '125')
     maptype = settings.get('maptype', 'roadmap')
     zoom = settings.get('zoom', '15')
 
@@ -265,6 +265,7 @@ def get_static_map_url(settings, api_key=None):  # TODO: optimize formatting
         map_ += ('&key=%s' % api_key)
         log.debug("API_KEY added to static map url.")
     return map_
+
 
 ########################################################################################################################
 
