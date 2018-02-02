@@ -50,7 +50,6 @@ class RocketMap:
         level_iv_raw = check_for_none(int, data.get('level_iv'), '?')
         cp_raw = check_for_none(int, data.get('cp'), '?')
         form_raw = check_for_none(int, data.get('form'), 0)
-        s2_cell_id = check_for_none(int, data.get('s2_cell_id'), '?')
         # Generate all the non-manager specifi
         pkmn = {
             'type': "pokemon",
@@ -79,8 +78,7 @@ class RocketMap:
             'size': 'unknown',
             'gmaps': get_gmaps_link(lat, lng),
             'applemaps': get_applemaps_link(lat, lng),
-            'form': get_form_name(int(form_raw)),
-            's2_cell_id': s2_cell_id,
+	          'form': get_form_name(int(form_raw)),
             'level_iv': level_iv_raw,
             'cp': cp_raw
         }

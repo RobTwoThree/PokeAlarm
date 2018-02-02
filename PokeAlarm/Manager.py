@@ -341,7 +341,6 @@ class Manager(object):
         size = pkmn['size']
         gender = pkmn['gender']
         form = pkmn['form']
-        s2_cell_id = pkmn['s2_cell_id']
         level_iv = pkmn['level_iv']
         cp = pkmn['cp']
 
